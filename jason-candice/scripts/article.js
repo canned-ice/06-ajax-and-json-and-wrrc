@@ -44,15 +44,15 @@ Article.loadAll = articleData => {
 Article.fetchAll = () => {
   // REVIEW: What is this 'if' statement checking for? Where was the rawData set to local storage?
   if (localStorage.rawData) {
-
-    Article.loadAll(localStorage.rawData);
+    Article.loadAll(JSON.parse(localStorage.rawData));
+    articleView.initIndexPage();
   }
   else {
-    $.getJSON('/data/hackerIpsum.json')
-      .then(Article => {
-        console.log('Got the Data');
-        Article.loadAll(localStorage.rawData);
-        // When looking at the method fetchAll() we see that the first if statement is looking for local storage data and if it is there then re run method load all. Else if we dont have data then grab it from the "server" which in this case is the data folder.
-      })
+    $.getJSON('/data/hackerIpsum.json', function ( data ) {
+      Article.loadAll(data);
+      localStorage.rawData = JSON.stringify(data);
+      articleView.initIndexPage();
+      // When looking at the method fetchAll() we see that the first if statement is looking for local storage data and if it is there then re run method load all. Else if we dont have data then grab it from the "server" which in this case is the data folder.
+    })
   }
 };
